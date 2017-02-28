@@ -1,8 +1,8 @@
 module.exports = {
-  entry: './source/server.js',
+  entry: './source/client.js',
   output: {
-    filename: 'index.js',
-    path: './built/server',
+    filename: 'app.js',
+    path: './built/static',
   },
   module: {
     loaders: [
@@ -15,10 +15,11 @@ module.exports = {
         loader: 'babel-loader',
         exclude: /(node_modules)/,
         query: {
-          presets: ['latest-minimal', 'react']
+          presets: ['es2016', 'es2017', 'react'],
+          plugins: ['transform-es2015-modules-commonjs']
         }
       }
     ]
   },
-  target: 'node',
+  target: 'web',
 }
