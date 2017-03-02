@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router-dom'
 
 import api from '../../api.js'
@@ -12,7 +12,7 @@ class Post extends Component {
       comments: []
     }
   }
-  async componentDidMount() {
+  async componentDidMount () {
     const [
       user,
       comments
@@ -27,7 +27,7 @@ class Post extends Component {
       comments
     })
   }
-  render() {
+  render () {
     return (
       <article id={`post-${this.props.id}`}>
         <h2>{this.props.title}</h2>
@@ -35,7 +35,14 @@ class Post extends Component {
           {this.props.body}
         </p>
         {!this.state.loading && (
-          <div></div>
+          <div>
+            <Link to={`/user/${this.state.user.id}`}>
+              {this.state.user.name}
+            </Link>
+            <span>
+              hay {this.state.comments.length} comentarios
+            </span>
+          </div>
         )}
       </article>
     );
