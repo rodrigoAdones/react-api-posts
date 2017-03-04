@@ -1,59 +1,57 @@
-import React, { Component, PropTypes } from 'react'
+import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
+
+import PostBody from '../../posts/containers/Post.jsx'
+import Loading from '../../shared/components/Loading.jsx'
 
 import api from '../../api.js'
 
 class Post extends Component {
   constructor (props) {
     super(props)
+
     this.state = {
       loading: true,
       user: {},
+      post: {},
       comments: []
     }
   }
+
   async componentDidMount () {
     const [
-      user,
+      post,
       comments
     ] = await Promise.all([
-      api.users.getSingle(this.props.userId),
-      api.posts.getComments(this.props.userId)
+      api.posts.getSingle(this.props.match.params.id),
+      api.posts.getComments(this.props.match.params.id)
     ])
 
+    const user = await api.users.getSingle(post.userId)
+
     this.setState({
-      loading: false,
+      post,
+      comments,
       user,
-      comments
+      loading: false
     })
   }
   render () {
+    if (this.state.loading) {
+      return (
+        <Loading />
+      )
+    }
     return (
-      <article id={`post-${this.props.id}`}>
-        <h2>{this.props.title}</h2>
-        <p>
-          {this.props.body}
-        </p>
-        {!this.state.loading && (
-          <div>
-            <Link to={`/user/${this.state.user.id}`}>
-              {this.state.user.name}
-            </Link>
-            <span>
-              hay {this.state.comments.length} comentarios
-            </span>
-          </div>
-        )}
-      </article>
-    );
+      <section name='post'>
+        <PostBody
+          {...this.state.post}
+          user={this.state.user}
+          comments={this.state.comments}
+        />
+      </section>
+    )
   }
 }
 
-Post.propTypes = {
-  id: PropTypes.number,
-  userId: PropTypes.number,
-  title: PropTypes.string,
-  body: PropTypes.string
-}
-
-export default Post;
+export default Post
