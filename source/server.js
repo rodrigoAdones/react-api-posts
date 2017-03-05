@@ -30,7 +30,7 @@ function requestHandler (req, res) {
   res.write(
     renderToStaticMarkup(
       <Layout
-        title='Aplicación'
+        title='Aplicación React Redux'
         content={html}
       />
     )
