@@ -1,63 +1,65 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import React, { Component } from 'react';
 
-import api from '../../api.js'
+import api from '../../api';
 
-import styles from './Page.css'
+import styles from './Page.css';
 
-import Post from '../../posts/containers/Post.jsx'
-import Loading from '../../shared/components/Loading.jsx'
+import Post from '../../posts/containers/Post';
+import Loading from '../../shared/components/Loading';
 
 class Home extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       page: 1,
       posts: [],
-      loading: true
-    }
-    this.handleScroll = this.handleScroll.bind(this)
+      loading: true,
+    };
+    this.handleScroll = this.handleScroll.bind(this);
   }
-  async componentDidMount () {
-    const posts = await api.posts.getList(this.state.page)
+  componentDidMount() {
+    this.initialFetch();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+  async initialFetch() {
+    const posts = await api.posts.getList(this.state.page);
 
     this.setState({
       posts,
       page: this.state.page + 1,
-      loading: false
-    })
+      loading: false,
+    });
 
-    window.addEventListener('scroll', this.handleScroll)
+    window.addEventListener('scroll', this.handleScroll);
   }
-  componentWillUmount () {
-    window.removeEventListener('scroll', this.handleScroll)
-  }
-  handleScroll () {
-    if (this.state.loading) return null
+  handleScroll() {
+    if (this.state.loading) return null;
 
-    const scrolled = window.scrollY
-    const viewportHeigth = window.innerHeight
-    const fullHeight = document.body.clientHeight
+    const scrolled = window.scrollY;
+    const viewportHeigth = window.innerHeight;
+    const fullHeight = document.body.clientHeight;
 
     if (!(scrolled + viewportHeigth + 100 >= fullHeight)) {
-      return null
+      return null;
     }
-    this.setState({ loading: true }, async () => {
+    return this.setState({ loading: true }, async () => {
       try {
-        const posts = await api.posts.getList(this.state.page)
+        const posts = await api.posts.getList(this.state.page);
 
         this.setState({
           posts: this.state.posts.concat(posts),
           page: this.state.page + 1,
-          loading: false
-        })
+          loading: false,
+        });
       } catch (e) {
-        console.log(e)
-        this.setState({ loading: false })
+        // console.log(e);
+        this.setState({ loading: false });
       }
-    })
+    });
   }
-  render () {
+  render() {
     return (
       <section name="Home" className={styles.section}>
         <h1>Home</h1>
@@ -70,8 +72,8 @@ class Home extends Component {
           )}
         </section>
       </section>
-    )
+    );
   }
 }
 
-export default Home
+export default Home;

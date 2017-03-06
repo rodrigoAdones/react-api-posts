@@ -1,36 +1,39 @@
-import React, { Component, PropTypes } from 'react'
-import { Link } from 'react-router-dom'
+import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router-dom';
 
-import api from '../../api.js'
+import api from '../../api';
 
-import styles from './Post.css'
+import styles from './Post.css';
 
 class Post extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       loading: true,
       user: props.user || null,
-      comments: props.comments || null
-    }
+      comments: props.comments || null,
+    };
   }
-  async componentDidMount () {
-    if (!!this.state.user && !!this.state.comments) return this.setState({ loading: false })
+  componentDidMount() {
+    this.initialFetch();
+  }
+  async initialFetch() {
+    if (!!this.state.user && !!this.state.comments) return this.setState({ loading: false });
     const [
       user,
-      comments
+      comments,
     ] = await Promise.all([
       !this.state.user ? api.users.getSingle(this.props.userId) : Promise.resolve(null),
-      !this.state.comments ? api.posts.getComments(this.props.id) : Promise.resolve(null)
-    ])
+      !this.state.comments ? api.posts.getComments(this.props.userId) : Promise.resolve(null),
+    ]);
 
-    this.setState({
+    return this.setState({
       loading: false,
       user: user || this.state.user,
-      comments
-    })
+      comments: comments || this.state.comments,
+    });
   }
-  render () {
+  render() {
     return (
       <article id={`post-${this.props.id}`} className={styles.post}>
         <h2 className={styles.title}>
@@ -52,7 +55,7 @@ class Post extends Component {
           </div>
         )}
       </article>
-    )
+    );
   }
 }
 
@@ -60,7 +63,20 @@ Post.propTypes = {
   id: PropTypes.number,
   userId: PropTypes.number,
   title: PropTypes.string,
-  body: PropTypes.string
-}
+  body: PropTypes.string,
+  user: PropTypes.shape({
+    name: PropTypes.string,
+  }),
+  comments: PropTypes.arrayOf(PropTypes.object),
+};
 
-export default Post
+Post.defaultProps = {
+  id: 1,
+  userId: 1,
+  title: '',
+  body: '',
+  user: null,
+  comments: null,
+};
+
+export default Post;
