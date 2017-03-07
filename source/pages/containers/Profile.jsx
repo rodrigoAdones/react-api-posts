@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import Post from '../../posts/containers/Post';
 
@@ -39,16 +40,23 @@ class Profile extends Component {
     }
     return (
       <section name="Profile">
-        <h2>Profile of {this.state.user.name}</h2>
+        <h2>
+          <FormattedMessage
+            id="title.profile"
+            values={{
+              name: this.state.user.name,
+            }}
+          />
+        </h2>
 
         <fieldset>
-          <legend>Basic Info</legend>
+          <legend><FormattedMessage id="profile.field.basic" /></legend>
           <input type="email" value={this.state.user.email} disabled />
         </fieldset>
 
         {this.state.user.address && (
           <fieldset>
-            <legend>Address</legend>
+            <legend><FormattedMessage id="profile.field.address" /></legend>
             <address>
               {this.state.user.address.street}
               {this.state.user.address.suit}
@@ -71,13 +79,17 @@ class Profile extends Component {
 
 Profile.propTypes = {
   match: PropTypes.shape({
-    id: PropTypes.number,
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }),
   }),
 };
 
 Profile.defaultProps = {
   match: {
-    id: 1,
+    params: {
+      id: 1,
+    },
   },
 };
 

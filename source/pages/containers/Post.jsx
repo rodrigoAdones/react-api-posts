@@ -66,13 +66,17 @@ class Post extends Component {
 
 Post.propTypes = {
   match: PropTypes.shape({
-    id: PropTypes.number,
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }),
   }),
 };
 
 Post.defaultProps = {
   match: {
-    id: 1,
+    params: {
+      id: 1,
+    },
   },
 };
 
