@@ -9,6 +9,10 @@ import Layout from './pages/components/Layout';
 
 import messages from './messages.json';
 
+const domain = process.env.NODE_ENV === 'production'
+  ? 'https://kras-react-sfs.now.sh'
+  : 'http://localhost:3001';
+
 function requestHandler(req, res) {
   const locale = req.headers['accept-language'].indexOf('es') >= 0 ? 'es' : 'en';
   const context = {};
@@ -36,6 +40,7 @@ function requestHandler(req, res) {
       <Layout
         title="Aplicación"
         content={html}
+        domain={domain}
       />,
     ),
   );
