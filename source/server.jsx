@@ -3,11 +3,14 @@ import React from 'react';
 import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
+import { Provider } from 'react-redux';
 
 import Pages from './pages/containers/Page';
 import Layout from './pages/components/Layout';
 
 import messages from './messages.json';
+
+import store from './store';
 
 const domain = process.env.NODE_ENV === 'production'
   ? 'https://kras-react-sfs.now.sh'
@@ -17,11 +20,13 @@ function requestHandler(req, res) {
   const locale = req.headers['accept-language'].indexOf('es') >= 0 ? 'es' : 'en';
   const context = {};
   const html = renderToString(
-    <IntlProvider locale={locale} messages={messages[locale]}>
-      <StaticRouter location={req.url} context={context}>
-        <Pages />
-      </StaticRouter>
-    </IntlProvider>,
+    <Provider store={store}>
+      <IntlProvider locale={locale} messages={messages[locale]}>
+        <StaticRouter location={req.url} context={context}>
+          <Pages />
+        </StaticRouter>
+      </IntlProvider>
+    </Provider>,
   );
 
   // const result = context.getResult();
