@@ -82,8 +82,8 @@ Post.propTypes = {
 Post.defaultProps = {
   id: 1,
   userId: 1,
-  title: '',
-  body: '',
+  title: 'Default Value',
+  body: null,
   user: null,
   comments: null,
 };

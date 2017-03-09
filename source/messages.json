@@ -15,7 +15,7 @@
   },
   "es": {
     "error.404": "Volver al inicio",
-    "title": "Mi primera aplicación con React",
+    "title": "Mi aplicación con React",
     "title.home": "Inicio",
     "title.profile": "Perfil de {name}",
     "profile.field.basic": "Información básica",

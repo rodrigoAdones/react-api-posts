@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import api from '../../api';
+// import api from '../../api';
 
 import styles from './Page.css';
 
@@ -19,44 +20,36 @@ class Home extends Component {
     };
     this.handleScroll = this.handleScroll.bind(this);
   }
-  componentDidMount() {
+  async componentDidMount() {
+    await this.props.actions.postNextPage();
     this.initialFetch();
+    window.addEventListener('scroll', this.handleScroll);
   }
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
   }
   async initialFetch() {
-    const posts = await api.posts.getList(this.props.page);
-
-    this.props.dispatch(
-      actions.setPost(posts),
-    );
-
     this.setState({ loading: false });
-
-    window.addEventListener('scroll', this.handleScroll);
   }
   handleScroll() {
     if (this.state.loading) return null;
 
     const scrolled = window.scrollY;
-    const viewportHeigth = window.innerHeight;
+    const viewportHeight = window.innerHeight;
     const fullHeight = document.body.clientHeight;
 
-    if (!(scrolled + viewportHeigth + 100 >= fullHeight)) {
+    if (!(scrolled + viewportHeight + 300 >= fullHeight)) {
       return null;
     }
     return this.setState({ loading: true }, async () => {
       try {
-        const posts = await api.posts.getList(this.props.page);
-
-        this.props.dispatch(
-          actions.setPost(posts),
-        );
+        // const posts = await api.posts.getList(this.props.page);
+        //
+        // this.props.actions.setPost(posts);
+        await this.props.actions.postNextPage();
 
         this.setState({ loading: false });
       } catch (e) {
-        // console.log(e);
         this.setState({ loading: false });
       }
     });
@@ -81,24 +74,23 @@ class Home extends Component {
 function mapStateToProps(state) {
   return {
     posts: state.posts.entities,
-    page: state.posts.page,
   };
 }
 
-/* function mapDispatchToProps(dispatch, props) {
+function mapDispatchToProps(dispatch) {
   return {
-    dispatch
+    actions: bindActionCreators(actions, dispatch),
   };
-}*/
+}
 
 Home.propTypes = {
-  dispatch: PropTypes.func,
+  actions: PropTypes.objectOf(PropTypes.func),
   posts: PropTypes.arrayOf(PropTypes.object),
 };
 
 Home.defaultProps = {
-  dispatch: null,
+  actions: null,
   posts: [],
 };
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
