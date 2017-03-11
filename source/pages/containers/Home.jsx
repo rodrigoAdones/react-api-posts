@@ -21,14 +21,14 @@ class Home extends Component {
     this.handleScroll = this.handleScroll.bind(this);
   }
   async componentDidMount() {
-    await this.props.actions.postNextPage();
-    this.initialFetch();
+    await this.initialFetch();
     window.addEventListener('scroll', this.handleScroll);
   }
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
   }
   async initialFetch() {
+    await this.props.actions.postNextPage();
     this.setState({ loading: false });
   }
   handleScroll() {
@@ -71,6 +71,16 @@ class Home extends Component {
   }
 }
 
+Home.propTypes = {
+  actions: PropTypes.objectOf(PropTypes.func),
+  posts: PropTypes.arrayOf(PropTypes.object),
+};
+
+Home.defaultProps = {
+  actions: null,
+  posts: [],
+};
+
 function mapStateToProps(state) {
   return {
     posts: state.posts.entities,
@@ -83,14 +93,5 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-Home.propTypes = {
-  actions: PropTypes.objectOf(PropTypes.func),
-  posts: PropTypes.arrayOf(PropTypes.object),
-};
-
-Home.defaultProps = {
-  actions: null,
-  posts: [],
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

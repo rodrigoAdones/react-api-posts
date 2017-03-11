@@ -56,9 +56,10 @@ function loadCommentsForPost(postId) {
 
 export default {
   postNextPage,
-  loadUser,
   loadCommentsForPost,
+  loadUser,
+
   setPost,
-  setUser,
   setComments,
+  setUser,
 };
