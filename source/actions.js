@@ -24,7 +24,7 @@ function setUser(user) {
 function postNextPage() {
   return async (dispatch, getState) => {
     const state = getState();
-    const currentPage = state.posts.page;
+    const currentPage = state.get('posts').get('page');
 
     const posts = await api.posts.getList(currentPage);
 

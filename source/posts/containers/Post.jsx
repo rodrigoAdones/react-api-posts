@@ -16,18 +16,12 @@ class Post extends Component {
       loading: true,
     };
   }
-  async componentDidMount() {
-    await this.initialFetch();
+  componentDidMount() {
+    this.initialFetch();
   }
   async initialFetch() {
-    if (!!this.props.user && !!this.props.comments) return this.setState({ loading: false });
-    // const [
-    //   user,
-    //   comments,
-    // ] = await Promise.all([
-    //   !this.state.user ? api.users.getSingle(this.props.userId) : Promise.resolve(null),
-    //   !this.state.comments ? api.posts.getComments(this.props.userId) : Promise.resolve(null),
-    // ]);
+    if (this.props.user && this.props.comments.size > 0) return this.setState({ loading: false });
+
     await Promise.all(
       [
         this.props.actions.loadUser(this.props.userId),
@@ -52,14 +46,14 @@ class Post extends Component {
         </p>
         {!this.state.loading && (
           <div className={styles.meta}>
-            <Link to={`/user/${this.props.user.id}`}>
-              {this.props.user.name}
+            <Link to={`/user/${this.props.user.get('id')}`}>
+              {this.props.user.get('name')}
             </Link>
             <span className={styles.comments}>
               <FormattedMessage
                 id="post.meta.comments"
                 values={{
-                  amount: this.props.comments.length,
+                  amount: this.props.comments.size,
                 }}
               />
             </span>
@@ -81,8 +75,10 @@ Post.propTypes = {
   user: PropTypes.shape({
     name: PropTypes.string,
     id: PropTypes.number,
+    size: PropTypes.number,
+    get: PropTypes.func,
   }),
-  comments: PropTypes.arrayOf(PropTypes.object),
+  comments: PropTypes.objectOf(PropTypes.object),
 };
 
 Post.defaultProps = {
@@ -95,10 +91,9 @@ Post.defaultProps = {
 };
 
 function mapStateToProps(state, props) {
-  // console.log(state);
   return {
-    user: state.user[props.userId],
-    comments: state.comments.filter(comment => comment.postId === props.id),
+    comments: state.get('comments').filter(comment => comment.get('postId') === props.id),
+    user: state.get('users').get(props.userId),
   };
 }
 

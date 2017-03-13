@@ -1,7 +1,7 @@
 {
   "en": {
     "error.404": "Go back to home",
-    "title": "My first application with React",
+    "title": "My application with React-Redux-Immutable",
     "title.home": "Home",
     "title.profile": "Profile of {name}",
     "profile.field.basic": "Basic info",
@@ -15,7 +15,7 @@
   },
   "es": {
     "error.404": "Volver al inicio",
-    "title": "Mi aplicación con React",
+    "title": "Mi aplicación con React-Redux-Immutable",
     "title.home": "Inicio",
     "title.profile": "Perfil de {name}",
     "profile.field.basic": "Información básica",

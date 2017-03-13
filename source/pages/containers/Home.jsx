@@ -3,8 +3,6 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-// import api from '../../api';
-
 import styles from './Page.css';
 
 import actions from '../../actions';
@@ -21,7 +19,7 @@ class Home extends Component {
     this.handleScroll = this.handleScroll.bind(this);
   }
   async componentDidMount() {
-    await this.initialFetch();
+    this.initialFetch();
     window.addEventListener('scroll', this.handleScroll);
   }
   componentWillUnmount() {
@@ -43,9 +41,6 @@ class Home extends Component {
     }
     return this.setState({ loading: true }, async () => {
       try {
-        // const posts = await api.posts.getList(this.props.page);
-        //
-        // this.props.actions.setPost(posts);
         await this.props.actions.postNextPage();
 
         this.setState({ loading: false });
@@ -60,7 +55,12 @@ class Home extends Component {
         <h1><FormattedMessage id="title.home" /></h1>
         <section className={styles.list}>
           {this.props.posts
-            .map(post => <Post key={post.id} {...post} />)
+            .map(post => (
+              <Post
+                key={post.get('id')}
+                {...post.toJS()}
+              />
+            )).toArray()
           }
           {this.state.loading && (
             <Loading />
@@ -73,17 +73,17 @@ class Home extends Component {
 
 Home.propTypes = {
   actions: PropTypes.objectOf(PropTypes.func),
-  posts: PropTypes.arrayOf(PropTypes.object),
+  posts: PropTypes.objectOf(PropTypes.object),
 };
 
 Home.defaultProps = {
   actions: null,
-  posts: [],
+  posts: null,
 };
 
 function mapStateToProps(state) {
   return {
-    posts: state.posts.entities,
+    posts: state.get('posts').get('entities'),
   };
 }
 
@@ -92,6 +92,5 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(actions, dispatch),
   };
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
